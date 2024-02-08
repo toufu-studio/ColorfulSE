@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .grid {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 10px;
+            z-index: 1;
+        }
+
+        .sound-button {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            font-size: 20px;
+            cursor: pointer;
+            border: none;
+            color: white;
+            outline: none;
+            border-radius: 10px;
+            transition: background-color 0.3s, transform 0.1s;
+            z-index: 2;
+        }
+
+        .sound-button:active {
+            transform: scale(0.95);
+        }
+
+        .note {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            font-size: 40px;
+            line-height: 20px;
+            color: white;
+            opacity: 0;
+            animation: noteAnimation 3s linear forwards;
+            z-index: 2;
+        }
+
+        @keyframes noteAnimation {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(100px, 100px);
+            }
+        }
+
+        #add-sound-button,
+        #remove-sound-button,
+        #change-color-button {
+            width: 100px;
+            height: 30px;
+            margin-top: 10px;
+            cursor: pointer;
+            background-color: #589dd5;
+            color: white;
+            border: none;
+            outline: none;
+            border-radius: 5px;
+        }
+
+        #add-sound-button:hover,
+        #remove-sound-button:hover,
+        #change-color-button:hover {
+            background-color: #3282b7;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .logo {
+            width: 212px;
+            height: 100px;
+            position: absolute;
+            top: 47%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 25px 0;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #ffffff;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 3;
+        }
+
+        #terms-container {
+            position: fixed;
+            bottom: 7%;
+            width: 300px;
+            background-color: rgba(255, 255, 255, 0);
+            padding: 10px;
+            text-align: center;
+            z-index: 3;
+            font-size: 15px;
+        }
+
+        #terms-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+    </style>
+    <title>MP3効果音</title>
+</head>
+<body>
+
+    <header>
+        <h1>効果音サイト</h1><img class="logo" src="logo.ico" alt="Logo">
+    </header>
+
+    <div class="grid">
+        <!-- 効果音ボタン -->
+        <button class="sound-button" onclick="playSound(1)" data-key="1" style="background-color: #e74c3c;">1</button>
+        <button class="sound-button" onclick="playSound(2)" data-key="2" style="background-color: #2ecc71;">2</button>
+        <button class="sound-button" onclick="playSound(3)" data-key="3" style="background-color: #f39c12;">3</button>
+        <button class="sound-button" onclick="playSound(4)" data-key="4" style="background-color: #3498db;">4</button>
+        <button class="sound-button" onclick="playSound(5)" data-key="5" style="background-color: #9b59b6;">5</button>
+        <button class="sound-button" onclick="playSound(6)" data-key="6" style="background-color: #34495e;">6</button>
+        <button class="sound-button" onclick="playSound(7)" data-key="7" style="background-color: #1abc9c;">7</button>
+        <button class="sound-button" onclick="playSound(8)" data-key="8" style="background-color: #e67e22;">8</button>
+        <button class="sound-button" onclick="playSound(9)" data-key="9" style="background-color: #7f8c8d;">9</button>
+
+        <!-- 効果音追加・削除ボタン -->
+        <button id="add-sound-button" onclick="addSound()">効果音追加</button>
+        <button id="remove-sound-button" onclick="removeSound()">効果音削除</button>
+
+        <!-- 色変更ボタン -->
+        <button id="change-color-button" onclick="changeButtonColors()">色変更</button>
+
+        <input type="file" id="file-input" accept=".mp3" onchange="uploadSound()">
+
+    </div>
+
+    <footer>
+        © 2024 Toufu_Studio　<a href="terms.html" id="terms-link">本サイトについて</a>
+    </footer>
+
+    <script>
+        const sounds = {};
+        const defaultColors = {
+            '1': '#e74c3c',
+            '2': '#2ecc71',
+            '3': '#f39c12',
+            '4': '#3498db',
+            '5': '#9b59b6',
+            '6': '#34495e',
+            '7': '#1abc9c',
+            '8': '#e67e22',
+            '9': '#7f8c8d',
+        };
+
+        function playSound(number) {
+            if (sounds[number]) {
+                const soundClone = new Audio(sounds[number].src);
+                soundClone.currentTime = 0;
+                soundClone.play().catch(error => console.error(error));
+
+                // 音符を追加
+                createNote();
+            }
+        }
+
+        function createNote() {
+            const note = document.createElement('div');
+            note.classList.add('note');
+
+            const randomNoteEntity = getRandomNoteEntity();
+            note.innerHTML = randomNoteEntity;
+
+            note.style.left = `${Math.random() * (window.innerWidth - 40)}px`;
+            note.style.top = `${Math.random() * (window.innerHeight - 40)}px`;
+
+            note.style.color = getRandomColor();
+
+            document.body.appendChild(note);
+
+            note.addEventListener('animationend', () => {
+                note.remove();
+            });
+        }
+
+        function getRandomNoteEntity() {
+            const noteEntities = ['♩', '♫', '♪', '♬'];
+            return noteEntities[Math.floor(Math.random() * noteEntities.length)];
+        }
+
+        function addSound() {
+            const newSoundKey = prompt('効果音を追加したいボタンの番号を入力してください。（1から9）');
+            if (newSoundKey && !sounds[newSoundKey] && /^[1-9]$/.test(newSoundKey)) {
+                document.getElementById('file-input').click();
+
+                document.getElementById('file-input').onchange = function (event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const newSoundURL = URL.createObjectURL(file);
+                        sounds[newSoundKey] = new Audio(newSoundURL);
+
+                        const newButton = createButton(newSoundKey);
+
+                        document.querySelector('.grid').replaceChild(newButton, document.querySelector(`.sound-button[data-key="${newSoundKey}"]`));
+
+                        if (defaultColors[newSoundKey]) {
+                            newButton.style.backgroundColor = defaultColors[newSoundKey];
+                        } else {
+                            defaultColors[newSoundKey] = getRandomColor();
+                            newButton.style.backgroundColor = defaultColors[newSoundKey];
+                        }
+                    }
+                };
+            } else {
+                alert('既に追加されているか、番号が間違っている可能性があります。\n効果音を削除してから再度お試しください。');
+            }
+        }
+
+        function removeSound() {
+            const soundKeyToRemove = prompt('効果音を削除したいボタンの番号を入力してください（1から9）');
+            if (soundKeyToRemove && sounds[soundKeyToRemove] && /^[1-9]$/.test(soundKeyToRemove)) {
+                delete sounds[soundKeyToRemove];
+
+                const soundButton = document.querySelector(`.sound-button[data-key="${soundKeyToRemove}"]`);
+                if (soundButton) {
+                    soundButton.setAttribute('data-key', soundKeyToRemove);
+                    soundButton.style.backgroundColor = defaultColors[soundKeyToRemove];
+                }
+            } else {
+                alert('既に追加されているか、番号が間違っている可能性があります。\n効果音が既に削除されているか確認して再度お試しください。');
+            }
+        }
+
+        function createButton(key) {
+            const newButton = document.createElement('button');
+            newButton.classList.add('sound-button');
+            newButton.setAttribute('data-key', key);
+            newButton.innerHTML = key;
+            newButton.onclick = () => playSound(key);
+            return newButton;
+        }
+
+        function uploadSound() {
+            const fileInput = document.getElementById('file-input');
+            if (fileInput.files.length > 0) {
+                const newSoundKey = prompt('効果音を割り当てる番号を入力してください（1から9）');
+                if (newSoundKey && !sounds[newSoundKey] && /^[1-9]$/.test(newSoundKey)) {
+                    const file = fileInput.files[0];
+                    const newSoundURL = URL.createObjectURL(file);
+                    sounds[newSoundKey] = new Audio(newSoundURL);
+
+                    const newButton = createButton(newSoundKey);
+
+                    document.querySelector('.grid').replaceChild(newButton, document.querySelector(`.sound-button[data-key="${newSoundKey}"]`));
+
+                    if (defaultColors[newSoundKey]) {
+                        newButton.style.backgroundColor = defaultColors[newSoundKey];
+                    } else {
+                        defaultColors[newSoundKey] = getRandomColor();
+                        newButton.style.backgroundColor = defaultColors[newSoundKey];
+                    }
+                } else {
+                    alert('有効な番号を入力してください（1から9）');
+                }
+            }
+        }
+
+        function changeButtonColors() {
+            const buttonKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            buttonKeys.forEach(key => {
+                const soundButton = document.querySelector(`.sound-button[data-key="${key}"]`);
+                if (soundButton) {
+                    const randomColor = getRandomColor();
+                    soundButton.style.backgroundColor = randomColor;
+                    defaultColors[key] = randomColor;
+                }
+            });
+        }
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+    </script>
+</body>
+</html>
