@@ -6,108 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <title>利用規約</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-            position: relative;
-        }
-
-        html,
-        body {
-            max-width: 100%;
-            overflow-x: hidden;
-        }
-
-        footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 25px 0;
-        }
-
-        header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: #ffffff;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 3;
-        }
-
-        #terms-container {
-            position: fixed;
-            bottom: 7%;
-            width: 300px;
-            background-color: rgba(255, 255, 255, 0);
-            padding: 10px;
-            text-align: center;
-            z-index: 3;
-            font-size: 15px;
-        }
-
-        #terms-link {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .logo {
-            width: 212px;
-            height: 100px;
-            position: absolute;
-            top: 47%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 2;
-        }
-
-        .container {
-            width: 80%;
-            max-width: 600px;
-            background-color: white;
-            border: 2px solid #0866a4;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        #back-button {
-            margin-top: 10px;
-            cursor: pointer;
-            background-color: #004574;
-            color: white;
-            border: none;
-            outline: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-        }
-
-        #back-button:hover {
-            background-color: #2980b9;
-        }
-    </style>
+    <link rel="stylesheet" href="css/terms.css">
 </head>
 
 <body>
     <header>
         <h1>効果音サイト</h1><img class="logo" src="logo.ico" alt="Logo">
     </header>
-    
+
     <div class="container">
-    <h1>本サイトについて</h1>
-    <p>本サイトは趣味で運営されています。そのことをご理解の上ご利用ください。<br>本サイトをご利用の場合、本利用規約に同意したものとします。<br>ー利用規約<br>・ソースコードの無断使用や自作発言はどはしないでください。<br>・本サイトを利用することによって生じた損害などについて一切の責任を負いかねます。<br>・法律などの問題により日本国内での利用に限定させていただきます。ご了承ください。<br>・準拠法は日本で、裁判管轄は東京地方裁判所とします。<br>・常識の範囲内でお使いください。</p>
-    <button id="back-button" onclick="goBack()">戻る</button>
+        <h1>本サイトについて</h1>
+        <p>本サイトは趣味で運営されています。そのことをご理解の上ご利用ください。<br>本サイトをご利用の場合、本利用規約に同意したものとします。<br>ー利用規約<br>・ソースコードの無断使用や自作発言はどはしないでください。<br>・本サイトを利用することによって生じた損害などについて一切の責任を負いかねます。<br>・法律などの問題により日本国内での利用に限定させていただきます。ご了承ください。<br>・準拠法は日本で、裁判管轄は東京地方裁判所とします。<br>・常識の範囲内でお使いください。
+        </p>
+        <button id="back-button" onclick="goBack()">戻る</button>
     </div>
 
     <footer>
